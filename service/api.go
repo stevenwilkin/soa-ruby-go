@@ -5,6 +5,7 @@ import (
 	"github.com/pilu/traffic"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 type Item struct {
@@ -16,6 +17,12 @@ var (
 	items       = map[uint]string{}
 	nextId uint = 1
 )
+
+func returnItemAsJson(w traffic.ResponseWriter, item Item) {
+	b, _ := json.Marshal(item)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+}
 
 func itemsHandler(w traffic.ResponseWriter, r *http.Request) {
 	allItems := []Item{}
@@ -36,13 +43,16 @@ func createItemHandler(w traffic.ResponseWriter, r *http.Request) {
 	items[id] = string(body)
 	nextId++
 
-	item := Item{id, string(body)}
-	b, _ := json.Marshal(item)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	returnItemAsJson(w, Item{id, string(body)})
 }
 
 func itemHandler(w traffic.ResponseWriter, r *http.Request) {
+	idString := r.URL.Query().Get("id")
+	id, _ := strconv.ParseUint(idString, 10, 0)
+
+	if text, present := items[uint(id)]; present {
+		returnItemAsJson(w, Item{uint(id), text})
+	}
 }
 
 func updateItemHandler(w traffic.ResponseWriter, r *http.Request) {
