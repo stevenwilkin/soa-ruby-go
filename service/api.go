@@ -18,6 +18,15 @@ var (
 )
 
 func itemsHandler(w traffic.ResponseWriter, r *http.Request) {
+	allItems := []Item{}
+	for id, text := range items {
+		println(id)
+		allItems = append(allItems, Item{id, text})
+	}
+
+	b, _ := json.Marshal(allItems)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
 }
 
 func createItemHandler(w traffic.ResponseWriter, r *http.Request) {
