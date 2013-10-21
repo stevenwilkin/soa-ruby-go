@@ -52,6 +52,8 @@ func itemHandler(w traffic.ResponseWriter, r *http.Request) {
 
 	if text, present := items[uint(id)]; present {
 		returnItemAsJson(w, Item{uint(id), text})
+	} else {
+		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
