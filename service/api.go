@@ -24,6 +24,27 @@ func returnItemAsJson(w traffic.ResponseWriter, item Item) {
 	w.Write(b)
 }
 
+func getItem(r *http.Request) (Item, bool) {
+	idString := r.URL.Query().Get("id")
+	id, _ := strconv.ParseUint(idString, 10, 0)
+
+	text, present := items[uint(id)]
+
+	if present {
+		return Item{uint(id), text}, true
+	} else {
+		return Item{}, false
+	}
+}
+
+func checkItemExists(w traffic.ResponseWriter, r *http.Request) bool {
+	if _, present := getItem(r); !present {
+		w.WriteHeader(http.StatusNotFound)
+		return false
+	}
+	return true
+}
+
 func itemsHandler(w traffic.ResponseWriter, r *http.Request) {
 	allItems := []Item{}
 	for id, text := range items {
@@ -47,14 +68,8 @@ func createItemHandler(w traffic.ResponseWriter, r *http.Request) {
 }
 
 func itemHandler(w traffic.ResponseWriter, r *http.Request) {
-	idString := r.URL.Query().Get("id")
-	id, _ := strconv.ParseUint(idString, 10, 0)
-
-	if text, present := items[uint(id)]; present {
-		returnItemAsJson(w, Item{uint(id), text})
-	} else {
-		w.WriteHeader(http.StatusNotFound)
-	}
+	item, _ := getItem(r)
+	returnItemAsJson(w, item)
 }
 
 func updateItemHandler(w traffic.ResponseWriter, r *http.Request) {
@@ -68,7 +83,8 @@ func main() {
 
 	router.Get("/items", itemsHandler)
 	router.Post("/items", createItemHandler)
-	router.Get("/items/:id", itemHandler)
+	router.Get("/items/:id", itemHandler).
+		AddBeforeFilter(checkItemExists)
 	router.Put("/items/:id", updateItemHandler)
 	router.Delete("/items/:id", deleteItemHandler)
 
