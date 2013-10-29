@@ -24,14 +24,18 @@ func returnItemAsJson(w traffic.ResponseWriter, item Item) {
 	w.Write(b)
 }
 
-func getItem(r *http.Request) (Item, bool) {
+func getId(r *http.Request) uint {
 	idString := r.URL.Query().Get("id")
 	id, _ := strconv.ParseUint(idString, 10, 0)
+	return uint(id)
+}
 
-	text, present := items[uint(id)]
+func getItem(r *http.Request) (Item, bool) {
+	id := getId(r)
+	text, present := items[id]
 
 	if present {
-		return Item{uint(id), text}, true
+		return Item{id, text}, true
 	} else {
 		return Item{}, false
 	}
@@ -73,6 +77,12 @@ func itemHandler(w traffic.ResponseWriter, r *http.Request) {
 }
 
 func updateItemHandler(w traffic.ResponseWriter, r *http.Request) {
+	id := getId(r)
+	body, _ := ioutil.ReadAll(r.Body)
+
+	items[id] = string(body)
+
+	returnItemAsJson(w, Item{id, string(body)})
 }
 
 func deleteItemHandler(w traffic.ResponseWriter, r *http.Request) {
@@ -85,7 +95,8 @@ func main() {
 	router.Post("/items", createItemHandler)
 	router.Get("/items/:id", itemHandler).
 		AddBeforeFilter(checkItemExists)
-	router.Put("/items/:id", updateItemHandler)
+	router.Put("/items/:id", updateItemHandler).
+		AddBeforeFilter(checkItemExists)
 	router.Delete("/items/:id", deleteItemHandler)
 
 	http.Handle("/", router)
