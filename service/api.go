@@ -86,6 +86,9 @@ func updateItemHandler(w traffic.ResponseWriter, r *http.Request) {
 }
 
 func deleteItemHandler(w traffic.ResponseWriter, r *http.Request) {
+	id := getId(r)
+	delete(items, id)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func main() {
@@ -97,7 +100,8 @@ func main() {
 		AddBeforeFilter(checkItemExists)
 	router.Put("/items/:id", updateItemHandler).
 		AddBeforeFilter(checkItemExists)
-	router.Delete("/items/:id", deleteItemHandler)
+	router.Delete("/items/:id", deleteItemHandler).
+		AddBeforeFilter(checkItemExists)
 
 	http.Handle("/", router)
 	http.ListenAndServe(":7000", nil)
