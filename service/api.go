@@ -52,7 +52,6 @@ func checkItemExists(w traffic.ResponseWriter, r *http.Request) bool {
 func itemsHandler(w traffic.ResponseWriter, r *http.Request) {
 	allItems := []Item{}
 	for id, text := range items {
-		println(id)
 		allItems = append(allItems, Item{id, text})
 	}
 
