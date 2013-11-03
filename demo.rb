@@ -3,15 +3,15 @@
 $: << 'library'
 
 require 'bundler/setup'
-require 'items'
+require 'item'
 
-Items.base_url = 'http://0.0.0.0:7000/items'
+Item.base_url = 'http://0.0.0.0:7000/items'
 
 puts 'A single item:'
-puts Items.find(2)
+puts Item.find(2)
 
 puts
 puts 'All items:'
-Items.all.each do |item|
+Item.all.each do |item|
   puts item
 end
