@@ -14,9 +14,15 @@ class Items
   end
 
   def self.all
-    response = @@connection.get @@path
+    response = @@connection.get
     response.body.map do |item|
       Item.new(item['Id'], item['Text'])
     end
+  end
+
+  def self.find(id)
+    response = @@connection.get id.to_s
+    return nil unless response.status == 200
+    Item.new(response.body['Id'], response.body['Text'])
   end
 end
