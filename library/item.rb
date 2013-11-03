@@ -24,6 +24,14 @@ class Item < Struct.new(:id, :text)
     new(response.body['Id'], response.body['Text'])
   end
 
+  def self.create(text)
+    response = @@connection.post do |request|
+      request.body = text
+    end
+    return nil unless response.status == 200
+    new(response.body['Id'], response.body['Text'])
+  end
+
   def to_s
     "#{id} - #{text}"
   end
