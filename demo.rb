@@ -26,3 +26,13 @@ list_items
 puts
 puts '> Retrieve item 2:'
 puts Item.find(2)
+
+puts
+puts '> Delete item 3:'
+puts Item.delete(3)
+
+puts
+puts '> Delete item 3 again:'
+puts Item.delete(3)
+
+list_items

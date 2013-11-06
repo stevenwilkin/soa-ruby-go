@@ -32,6 +32,11 @@ class Item < Struct.new(:id, :text)
     new(response.body['Id'], response.body['Text'])
   end
 
+  def self.delete(id)
+    response = @@connection.delete id.to_s
+    response.status == 204
+  end
+
   def to_s
     "#{id} - #{text}"
   end
