@@ -37,6 +37,13 @@ class Item < Struct.new(:id, :text)
     response.status == 204
   end
 
+  def save
+    response = @@connection.put id.to_s do |request|
+      request.body = text
+    end
+    response.status == 200
+  end
+
   def to_s
     "#{id} - #{text}"
   end

@@ -36,3 +36,11 @@ puts '> Delete item 3 again:'
 puts Item.delete(3)
 
 list_items
+
+puts
+puts '> Update item 2:'
+item = Item.find(2)
+item.text = 'very second'
+puts item.save
+
+list_items
