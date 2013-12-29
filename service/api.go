@@ -24,13 +24,13 @@ func returnItemAsJson(w traffic.ResponseWriter, item Item) {
 	w.Write(b)
 }
 
-func getId(r *http.Request) uint {
+func getId(r *traffic.Request) uint {
 	idString := r.URL.Query().Get("id")
 	id, _ := strconv.ParseUint(idString, 10, 0)
 	return uint(id)
 }
 
-func getItem(r *http.Request) (Item, bool) {
+func getItem(r *traffic.Request) (Item, bool) {
 	id := getId(r)
 	text, present := items[id]
 
@@ -41,15 +41,14 @@ func getItem(r *http.Request) (Item, bool) {
 	}
 }
 
-func checkItemExists(w traffic.ResponseWriter, r *http.Request) bool {
+func checkItemExists(w traffic.ResponseWriter, r *traffic.Request) {
 	if _, present := getItem(r); !present {
 		w.WriteHeader(http.StatusNotFound)
-		return false
+		w.WriteText("Item Not Found")
 	}
-	return true
 }
 
-func itemsHandler(w traffic.ResponseWriter, r *http.Request) {
+func itemsHandler(w traffic.ResponseWriter, r *traffic.Request) {
 	allItems := []Item{}
 	for id, text := range items {
 		allItems = append(allItems, Item{id, text})
@@ -60,7 +59,7 @@ func itemsHandler(w traffic.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func createItemHandler(w traffic.ResponseWriter, r *http.Request) {
+func createItemHandler(w traffic.ResponseWriter, r *traffic.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 
 	id := nextId
@@ -70,12 +69,12 @@ func createItemHandler(w traffic.ResponseWriter, r *http.Request) {
 	returnItemAsJson(w, Item{id, string(body)})
 }
 
-func itemHandler(w traffic.ResponseWriter, r *http.Request) {
+func itemHandler(w traffic.ResponseWriter, r *traffic.Request) {
 	item, _ := getItem(r)
 	returnItemAsJson(w, item)
 }
 
-func updateItemHandler(w traffic.ResponseWriter, r *http.Request) {
+func updateItemHandler(w traffic.ResponseWriter, r *traffic.Request) {
 	id := getId(r)
 	body, _ := ioutil.ReadAll(r.Body)
 
@@ -84,7 +83,7 @@ func updateItemHandler(w traffic.ResponseWriter, r *http.Request) {
 	returnItemAsJson(w, Item{id, string(body)})
 }
 
-func deleteItemHandler(w traffic.ResponseWriter, r *http.Request) {
+func deleteItemHandler(w traffic.ResponseWriter, r *traffic.Request) {
 	id := getId(r)
 	delete(items, id)
 	w.WriteHeader(http.StatusNoContent)
