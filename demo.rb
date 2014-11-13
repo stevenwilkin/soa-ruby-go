@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$: << 'library'
+$: << '.'
 
 require 'bundler/setup'
 require 'item'
