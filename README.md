@@ -6,8 +6,8 @@ A simple example of developing an API and providing a library to access that API
 
 Ensure [Go](http://golang.org/) is installed and your ``$GOPATH`` is set, then run the following:
 
-	go get .
-	go run ./api.go
+	go get github.com/tools/godep
+	godep go run ./api.go
 
 ## Run the demo script
 
