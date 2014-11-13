@@ -1,0 +1,15 @@
+{
+	"ImportPath": "soa",
+	"GoVersion": "go1.4beta1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/pilu/config",
+			"Rev": "a4c5c00ca7645976afc6537dd177bf78c553b901"
+		},
+		{
+			"ImportPath": "github.com/pilu/traffic",
+			"Comment": "v0.5.0",
+			"Rev": "074cc94dc35275f20deb37e78b420b4ca0ccdca2"
+		}
+	]
+}
