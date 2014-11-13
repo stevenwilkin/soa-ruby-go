@@ -14,14 +14,14 @@ class Item < Struct.new(:id, :text)
   def self.all
     response = @@connection.get
     response.body.map do |item|
-      new(item['Id'], item['Text'])
+      new(item['id'], item['text'])
     end
   end
 
   def self.find(id)
     response = @@connection.get id.to_s
     return nil unless response.status == 200
-    new(response.body['Id'], response.body['Text'])
+    new(response.body['id'], response.body['text'])
   end
 
   def self.create(text)
@@ -29,7 +29,7 @@ class Item < Struct.new(:id, :text)
       request.body = text
     end
     return nil unless response.status == 200
-    new(response.body['Id'], response.body['Text'])
+    new(response.body['id'], response.body['text'])
   end
 
   def self.delete(id)

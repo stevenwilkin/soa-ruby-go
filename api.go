@@ -9,8 +9,8 @@ import (
 )
 
 type Item struct {
-	Id   uint
-	Text string
+	Id   uint   `json:"id"`
+	Text string `json:"text"`
 }
 
 var (
